@@ -59,6 +59,7 @@ public class CompassListener extends CordovaPlugin implements SensorEventListene
   // Replaced by sin & cos
   float sinHeading; // sin of most recent heading value
   float cosHeading; // cos of most recent heading value
+  float trueHeading; // most recent heading value in degrees
   long timeStamp; // time of most recent value
   long lastAccessTime; // time the value was last retrieved
   int rotationAccuracy = 2; // SENSOR_STATUS_ACCURACY_MEDIUM accuracy of the sensor
@@ -263,8 +264,8 @@ public class CompassListener extends CordovaPlugin implements SensorEventListene
       // Beware also of screen orientation:
       // https://android-developers.googleblog.com/2010/09/one-screen-turn-deserves-another.html
 
-      // heading = (float) Math.atan2((double) (R[1] - R[3]), (double) (R[0] + R[4]));
-      // heading = toDeg(heading);
+       float heading = (float) Math.atan2((double) (R[1] - R[3]), (double) (R[0] + R[4]));
+       this.trueHeading = toDeg(heading);
       // Replaced by sin & cos
       this.sinHeading = R[1] - R[3];
       this.cosHeading = R[0] + R[4];
@@ -331,7 +332,7 @@ public class CompassListener extends CordovaPlugin implements SensorEventListene
     long myNow = System.currentTimeMillis();
 
     // obj.put("magneticHeading", this.heading);
-    // obj.put("trueHeading", this.heading);
+    obj.put("trueHeading", this.trueHeading);
     if (!isNan(this.sinHeading))
       obj.put("sinHeading", this.sinHeading);
     if (!isNan(this.cosHeading))
